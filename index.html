@@ -194,39 +194,70 @@
 
     <button id="generate-btn">신규 번호 추첨하기</button>
     
-    <button id="share-btn" style="margin-top: 15px; background-color: #f1f2f6; color: #2d3436; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid #dfe6e9;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
-        결과 공유하기
-    </button>
+    <div class="share-section" style="margin-top: 25px; padding-top: 20px; border-top: 1px dashed #eee;">
+        <p style="font-size: 0.85rem; color: #a4b0be; margin-bottom: 15px;">행운을 친구에게 공유하기</p>
+        <div style="display: flex; justify-content: center; gap: 15px;">
+            <!-- 카카오톡 -->
+            <button onclick="shareKakao()" class="circle-btn" style="background-color: #FEE500;" title="카카오톡 공유">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="#3C1E1E"><path d="M12 3C7.029 3 3 6.134 3 10c0 2.479 1.644 14.673 7.081 15.901l-.929 3.417c-.073.266.237.485.459.327l3.986-2.821c.459.116.927.174 1.403.174 4.971 0 9-3.134 9-7s-4.029-7-9-7z"/></svg>
+            </button>
+            <!-- 라인 -->
+            <button onclick="shareLine()" class="circle-btn" style="background-color: #00B900;" title="라인 공유">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M24 10.304c0-5.231-5.383-9.486-12-9.486s-12 4.255-12 9.486c0 4.69 4.27 8.604 10.04 9.325.39.085.923.258 1.058.592.12.301.079.767.038 1.07l-.17 1.021c-.053.303-.251 1.185 1.085.645 1.336-.54 7.203-4.241 9.824-7.255 1.763-2 2.125-3.565 2.125-5.398z"/></svg>
+            </button>
+            <!-- 링크 복사 -->
+            <button onclick="copyLink()" class="circle-btn" style="background-color: #f1f2f6;" title="링크 복사">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2d3436" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+        </div>
+    </div>
 </div>
+
+<style>
+    .circle-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .circle-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+</style>
 
 <script>
     const btn = document.getElementById('generate-btn');
     const container = document.getElementById('results-container');
-    const shareBtn = document.getElementById('share-btn');
 
-    async function shareResult() {
-        const shareData = {
-            title: 'Lotto Premium',
-            text: '오늘의 행운의 번호를 확인해보세요! 🍀',
-            url: window.location.href
-        };
+    const siteUrl = window.location.href;
+    const shareText = "오늘의 로또 행운 번호를 확인해보세요! 🍀";
 
-        try {
-            if (navigator.share) {
-                // 모바일 및 지원되는 PC 브라우저에서 시스템 공유창 호출
-                await navigator.share(shareData);
-            } else {
-                // 지원하지 않는 경우 클립보드 복사로 대체
-                await navigator.clipboard.writeText(window.location.href);
-                alert('링크가 복사되었습니다! 카카오톡에 붙여넣기 해주세요.');
-            }
-        } catch (err) {
-            console.log('Share failed:', err);
-        }
+    function shareKakao() {
+        // 카카오 공식 공유 페이지로 연결 (별도 키 없이 기본 공유 가능)
+        const url = `https://sharer.kakao.com/talk/friends/picker/link?url=${encodeURIComponent(siteUrl)}`;
+        window.open(url, 'kakao_share', 'width=400,height=600');
     }
 
-    shareBtn.addEventListener('click', shareResult);
+    function shareLine() {
+        const url = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(siteUrl)}`;
+        window.open(url, 'line_share', 'width=400,height=600');
+    }
+
+    async function copyLink() {
+        try {
+            await navigator.clipboard.writeText(siteUrl);
+            alert('링크가 복사되었습니다! 친구에게 전달해보세요.');
+        } catch (err) {
+            console.error('Copy failed', err);
+        }
+    }
 
     function getRangeClass(num) {
         if (num <= 10) return 'r1';

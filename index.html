@@ -193,11 +193,63 @@
     </div>
 
     <button id="generate-btn">신규 번호 추첨하기</button>
+    
+    <button id="kakao-share-btn" style="margin-top: 15px; background-color: #FEE500; color: #3C1E1E; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 3C7.02944 3 3 6.13401 3 10C3 12.4792 4.64382 14.673 7.08051 15.9009L6.1518 19.3179C6.07926 19.5841 6.38887 19.8033 6.61111 19.6455L10.5966 16.8242C11.0558 16.9401 11.5234 17 12 17C16.9706 17 21 13.866 21 10C21 6.13401 16.9706 3 12 3Z" fill="#3C1E1E"/>
+        </svg>
+        카카오톡 공유하기
+    </button>
 </div>
+
+<!-- 카카오 SDK 추가 -->
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.0/kakao.min.js" integrity="sha384-l686YpX7+WAb3vC7L016oH+512z25z4T7B5yS2mX2fW3L8J2P4J8J2P4J8J2P4J8" crossorigin="anonymous"></script>
 
 <script>
     const btn = document.getElementById('generate-btn');
     const container = document.getElementById('results-container');
+    const kakaoBtn = document.getElementById('kakao-share-btn');
+
+    // 카카오 SDK 초기화 (본인의 JavaScript 키로 변경해야 합니다)
+    // 키가 없으면 공유 기능이 작동하지 않습니다.
+    try {
+        if (!Kakao.isInitialized()) {
+            Kakao.init('YOUR_KAKAO_JS_KEY'); // <-- 여기에 카카오 개발자 자바스크립트 키를 넣어야 합니다.
+        }
+    } catch(e) {
+        console.error("Kakao SDK load error");
+    }
+
+    function shareKakao() {
+        if (!Kakao.isInitialized()) {
+            alert("카카오 키가 설정되지 않았습니다. (개발자 설정 필요)");
+            return;
+        }
+
+        Kakao.Share.sendDefault({
+            objectType: 'feed',
+            content: {
+                title: '대박 예감! 로또 번호 추첨 결과',
+                description: '오늘의 행운의 번호를 확인해보세요.',
+                imageUrl: 'https://images.unsplash.com/photo-1596838132731-bc920ad15b45?q=80&w=500&auto=format&fit=crop', // 공유 시 보여줄 이미지
+                link: {
+                    mobileWebUrl: window.location.href,
+                    webUrl: window.location.href,
+                },
+            },
+            buttons: [
+                {
+                    title: '번호 뽑으러 가기',
+                    link: {
+                        mobileWebUrl: window.location.href,
+                        webUrl: window.location.href,
+                    },
+                },
+            ],
+        });
+    }
+
+    kakaoBtn.addEventListener('click', shareKakao);
 
     function getRangeClass(num) {
         if (num <= 10) return 'r1';

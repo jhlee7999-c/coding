@@ -238,11 +238,11 @@
     shareBtn.addEventListener('click', shareResult);
 
     function getRangeClass(num) {
-        if (num <= 9) return 'r1';
-        if (num <= 19) return 'r2';
-        if (num <= 29) return 'r3';
-        if (num <= 39) return 'r4';
-        return 'r5';
+        if (num <= 9) return 'r1';  // 1 ~ 9
+        if (num <= 19) return 'r2'; // 10 ~ 19
+        if (num <= 29) return 'r3'; // 20 ~ 29
+        if (num <= 39) return 'r4'; // 30 ~ 39
+        return 'r5';                // 40 ~ 45
     }
 
     function generateLotto() {
